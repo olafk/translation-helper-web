@@ -1,5 +1,3 @@
-Bundle-Activator: de.olafkock.liferay.translationhelper.TranslationHelperActivator
 Bundle-Name: translation-helper-web
 Bundle-SymbolicName: de.olafkock.liferay.translationhelper
 Bundle-Version: 1.0.0
-Export-Package: de.olafkock.liferay.translationhelper.api
