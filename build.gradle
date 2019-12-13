@@ -1,0 +1,10 @@
+dependencies {
+	compileOnly group: "org.osgi", name: "org.osgi.core"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations"
+	compileOnly "javax.portlet:portlet-api:2.0"
+	compileOnly group: "javax.servlet", name: "javax.servlet-api"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib"
+    compile group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+    compileOnly group: "com.liferay", name: "com.liferay.portal.configuration.metatype", version: "2.0.0"
+}
