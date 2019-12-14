@@ -45,11 +45,12 @@ public class TranslationHelperFilter implements Filter {
 			new LanguageUtil().setLanguage(new LanguageWrapper(LanguageUtil.getLanguage()));
 			this.initialized = true;
 		}
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		try {
-			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+			TranslationHelperThreadLocal.clear();
+			TranslationHelperThreadLocal.activate();
 			if("GET".equals(httpServletRequest.getMethod())) {
 				log.info("FILTERING " + httpServletRequest.getMethod());
-				TranslationHelperThreadLocal.clear();
 				
 				chain.doFilter(request, response);
 	
@@ -59,7 +60,7 @@ public class TranslationHelperFilter implements Filter {
 				chain.doFilter(request, response);
 			}
 		} finally {
-			TranslationHelperThreadLocal.remove();
+			TranslationHelperThreadLocal.clear();
 		}
 	}
 

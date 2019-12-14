@@ -1,12 +1,27 @@
 package de.olafkock.liferay.translationhelper;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class TranslationHelperThreadLocal {
 	
+	private static final Log log = LogFactoryUtil.getLog(TranslationHelperThreadLocal.class);
+	
+	public static void activate() {
+		tl.get().setActive();
+	}
+	
 	public static void add(String key, String value) {
-		tl.get().addResult(key, value);
+		TranslationHelperThreadLocal holder = tl.get();
+		if(holder.isActive()) {
+			holder.addResult(key, value);
+		}
+		else {
+			clear();
+		}
 	}
 	
 	public static HashMap<String,HashSet<String>> retrieve() {
@@ -14,16 +29,13 @@ public class TranslationHelperThreadLocal {
 	}
 	
 	public static void clear() {
-		tl.get().clearResults();
-	}
-
-	public static void remove() {
 		tl.remove();
 	}
 	
 
 	
 	private HashMap<String,HashSet<String>> results;
+	private boolean active = false;
 	
 	private TranslationHelperThreadLocal() {
 		this.results = new HashMap<String, HashSet<String>>();
@@ -46,6 +58,14 @@ public class TranslationHelperThreadLocal {
 		this.results = new HashMap<String, HashSet<String>>();
 	}
 
+	private boolean isActive() {
+		return active;
+	}
+
+	private void setActive() {
+		this.active = true;
+	}
+	
 	private static final ThreadLocal<TranslationHelperThreadLocal> tl = new ThreadLocal<TranslationHelperThreadLocal>() {
 		@Override
 		protected TranslationHelperThreadLocal initialValue() {
