@@ -21,58 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class LanguageWrapper implements Language {
-	/**
-	 * If this class isn't embedded here, I've ran into classloading problems
-	 * during runtime - nice quickfix to make sure it's available
-	 * 
-	 * @author Olaf Kock
-	 *
-	 */
-	public static class LookupResult {
-		private final String key;
-		private final String value;
 
-		public LookupResult(String key, String value) {
-			this.key = key;
-			this.value = value;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public String getValue() {
-			return this.value;
-		}
-
-		public String toString() {
-			return key + MAGIC + value;
-		}
-
-		@Override
-		public int hashCode() {
-			return toString().hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof LookupResult) {
-				return toString().equals(obj.toString());
-			} else {
-				return false;
-			}
-		}
-
-		private static final String MAGIC = "------";
-
-	};
-
-	// Development time: Not really undeploying old ones on updates.
-	// ToDo: Unregister wrapper when undeploying
 	public LanguageWrapper(Language wrappee) {
-		if (wrappee instanceof LanguageWrapper) {
-			wrappee = ((LanguageWrapper) wrappee).unwrap();
-		}
 		delegate = wrappee;
 	}
 
@@ -85,158 +35,158 @@ public class LanguageWrapper implements Language {
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper argument) {
 		String result = delegate.format(httpServletRequest, pattern, argument);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper argument, boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper[] arguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper[] arguments, boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object argument) {
 		String result = delegate.format(httpServletRequest, pattern, argument);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object argument,
 			boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object[] arguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object[] arguments,
 			boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, List<Object> arguments) {
 		String result = delegate.format(locale, pattern, arguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object argument) {
 		String result = delegate.format(locale, pattern, argument);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object argument, boolean translateArguments) {
 		String result = delegate.format(locale, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object[] arguments) {
 		String result = delegate.format(locale, pattern, arguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object[] arguments, boolean translateArguments) {
 		String result = delegate.format(locale, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object argument) {
 		String result = delegate.format(resourceBundle, pattern, argument);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object argument, boolean translateArguments) {
 		String result = delegate.format(resourceBundle, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object[] arguments) {
 		String result = delegate.format(resourceBundle, pattern, arguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object[] arguments,
 			boolean translateArguments) {
 		String result = delegate.format(resourceBundle, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(new LookupResult(pattern, result));
+		TranslationHelperThreadLocal.add(pattern, result);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, ResourceBundle resourceBundle, String key) {
 		String result = delegate.get(httpServletRequest, resourceBundle, key);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, ResourceBundle resourceBundle, String key,
 			String defaultValue) {
 		String result = delegate.get(httpServletRequest, resourceBundle, key, defaultValue);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, String key) {
 		String result = delegate.get(httpServletRequest, key);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, String key, String defaultValue) {
 		String result = delegate.get(httpServletRequest, key, defaultValue);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(Locale locale, String key) {
 		String result = delegate.get(locale, key);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(Locale locale, String key, String defaultValue) {
 		String result = delegate.get(locale, key, defaultValue);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(ResourceBundle resourceBundle, String key) {
 		String result = delegate.get(resourceBundle, key);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 
 	public String get(ResourceBundle resourceBundle, String key, String defaultValue) {
 		String result = delegate.get(resourceBundle, key, defaultValue);
-		TranslationHelperThreadLocal.add(new LookupResult(key, result));
+		TranslationHelperThreadLocal.add(key, result);
 		return result;
 	}
 

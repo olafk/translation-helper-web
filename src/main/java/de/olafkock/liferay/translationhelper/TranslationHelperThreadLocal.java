@@ -1,16 +1,15 @@
 package de.olafkock.liferay.translationhelper;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
-import de.olafkock.liferay.translationhelper.LanguageWrapper.LookupResult;
-
 public class TranslationHelperThreadLocal {
-	public static void add(LookupResult lookupResult) {
-		tl.get().addResult(lookupResult);
+	
+	public static void add(String key, String value) {
+		tl.get().addResult(key, value);
 	}
 	
-	public static Collection<LookupResult> retrieve() {
+	public static HashMap<String,HashSet<String>> retrieve() {
 		return tl.get().getResults();
 	}
 	
@@ -22,24 +21,29 @@ public class TranslationHelperThreadLocal {
 		tl.remove();
 	}
 	
+
 	
-	
-	private HashSet<LookupResult> results;
+	private HashMap<String,HashSet<String>> results;
 	
 	private TranslationHelperThreadLocal() {
-		this.results = new HashSet<LookupResult>();
+		this.results = new HashMap<String, HashSet<String>>();
 	}
 	
-	private void addResult(LookupResult lookupResult) {
-		this.results.add(lookupResult);
+	private void addResult(String key, String value) {
+		HashSet<String> values = this.results.get(key);
+		if(values == null) {
+			values = new HashSet<String>();
+			results.put(key, values);
+		}
+		values.add(value);
 	}
 	
-	private Collection<LookupResult> getResults() {
+	private HashMap<String,HashSet<String>> getResults() {
 		return this.results;
 	}
 
 	private void clearResults() {
-		this.results = new HashSet<LookupResult>();
+		this.results = new HashMap<String, HashSet<String>>();
 	}
 
 	private static final ThreadLocal<TranslationHelperThreadLocal> tl = new ThreadLocal<TranslationHelperThreadLocal>() {

@@ -6,7 +6,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -17,8 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
-
-import de.olafkock.liferay.translationhelper.LanguageWrapper.LookupResult;
 
 @Component(
 	      immediate = true,
@@ -65,7 +64,7 @@ public class TranslationHelperFilter implements Filter {
 	}
 
 	private void report() {
-		Collection<LookupResult> result = TranslationHelperThreadLocal.retrieve();
+		HashMap<String, HashSet<String>> result = TranslationHelperThreadLocal.retrieve();
 //		for (LookupResult lookupResult : result) {
 //			log.info(lookupResult);
 //		}

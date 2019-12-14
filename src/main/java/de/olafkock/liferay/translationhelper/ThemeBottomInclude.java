@@ -6,14 +6,14 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
-
-import de.olafkock.liferay.translationhelper.LanguageWrapper.LookupResult;
 
 @Component(immediate = true, service = DynamicInclude.class)
 public class ThemeBottomInclude extends BaseDynamicInclude {
@@ -21,13 +21,23 @@ public class ThemeBottomInclude extends BaseDynamicInclude {
 	@Override
 	public void include(
 			HttpServletRequest request, HttpServletResponse response,
-			String key) throws IOException {
-		Collection<LookupResult> result = TranslationHelperThreadLocal.retrieve();
+			String dynamicIncludeKey) throws IOException {
+		HashMap<String,HashSet<String>> result = TranslationHelperThreadLocal.retrieve();
 		PrintWriter printWriter = response.getWriter();
 		printWriter.println("<script>"
 				+ "var liferayLanguageLookups = new Map([");
-		for (LookupResult lookupResult : result) {
-			printWriter.println(" ['" + HtmlUtil.escapeJS(lookupResult.getKey()) + "', '" + HtmlUtil.escapeJS(lookupResult.getValue()) + "'] ,");
+		for (String key : result.keySet()) {
+			printWriter.print(" ['" + HtmlUtil.escapeJS(key) + "', [");
+			for (Iterator<String> iterator = result.get(key).iterator(); iterator.hasNext();) {
+				String value = iterator.next();
+				printWriter.print("'" + HtmlUtil.escapeJS(value) + "'");
+				if(iterator.hasNext()) {
+					printWriter.print(", ");
+				} else {
+					printWriter.print("]");
+				}
+			}
+			printWriter.println( "],");
 		}
 		printWriter.println("]);");
 		printWriter.println("</script>");	
