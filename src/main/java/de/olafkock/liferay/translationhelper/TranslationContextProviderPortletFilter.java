@@ -41,7 +41,6 @@ public class TranslationContextProviderPortletFilter implements RenderFilter {
 	@Override
 	public void doFilter(RenderRequest request, RenderResponse response, FilterChain chain)
 			throws IOException, PortletException {
-		log.info("filtering");
 		String oldContext = TranslationHelperThreadLocal.retrieveContext();
 		try {
 			TranslationHelperThreadLocal.initContext(context);

@@ -6,8 +6,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,7 +13,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -35,8 +32,7 @@ import org.osgi.service.component.annotations.Component;
 	      property = {
 	    		  "servlet-context-name=",
 	    		  "servlet-filter-name=Translation Filter",
-	    		  "url-pattern=/web/*",
-	    		  "url-pattern=/group/*",
+	    		  "url-pattern=/*"
 	      },
 		service=Filter.class
 )
@@ -59,31 +55,13 @@ public class TranslationHelperServletFilter implements Filter {
 			new LanguageUtil().setLanguage(new LanguageWrapper(LanguageUtil.getLanguage()));
 			this.initialized = true;
 		}
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		try {
 			TranslationHelperThreadLocal.clear();
 			TranslationHelperThreadLocal.activate();
-			if("GET".equals(httpServletRequest.getMethod())) {
-				log.info("FILTERING " + httpServletRequest.getMethod());
-				
-				chain.doFilter(request, response);
-	
-				report();
-			} else {
-				log.info("IGNORING " + httpServletRequest.getMethod());
-				chain.doFilter(request, response);
-			}
+			chain.doFilter(request, response);
 		} finally {
 			TranslationHelperThreadLocal.clear();
 		}
-	}
-
-	private void report() {
-		HashMap<String, HashSet<String[]>> result = TranslationHelperThreadLocal.retrieve();
-//		for (LookupResult lookupResult : result) {
-//			log.info(lookupResult);
-//		}
-		log.info(result.size() + " keys looked up in this request");
 	}
 
 	@Override
