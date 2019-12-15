@@ -1,14 +1,9 @@
 package de.olafkock.liferay.translationhelper;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class TranslationHelperThreadLocal {
-	
-	private static final Log log = LogFactoryUtil.getLog(TranslationHelperThreadLocal.class);
 	
 	public static void activate() {
 		tl.get().setActive();
