@@ -90,8 +90,8 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 				+ "the translated value to see information about the context in which they have "
 				+ "been looked up.</p>");
 		printWriter.println("<p>Values marked red are 'suspect', e.g. empty, undefined, or values "
-				+ "with identical lookup values. They're candidates to be missing translations, or"
-				+ "duplicate lookups (e.g. already translated values that have been used as keys for"
+				+ "with identical lookup values. They're candidates to be missing translations, or "
+				+ "duplicate lookups (e.g. already translated values that have been used as keys for "
 				+ "a subsequent lookup)</p><br/>");
 		printWriter.println("</div>");
 		printWriter.println("<script>"
