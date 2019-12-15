@@ -54,10 +54,6 @@ public class TranslationHelperThreadLocal {
 		return this.results;
 	}
 
-	private void clearResults() {
-		this.results = new HashMap<String, HashSet<String>>();
-	}
-
 	private boolean isActive() {
 		return active;
 	}
