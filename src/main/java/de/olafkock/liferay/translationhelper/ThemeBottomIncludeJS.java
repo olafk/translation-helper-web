@@ -15,7 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = DynamicInclude.class)
+/**
+ * A Dynamic Include component to add all the values translated in this request 
+ * to the bottom of the page as a JS Map with a well known name. This map can be 
+ * used with a more sophisticated application when the display of a table is not 
+ * enough.
+ * 
+ * @author Olaf Kock
+ */
+
+@Component(
+		immediate = true, 
+		service = DynamicInclude.class
+	)
 
 public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 
@@ -23,15 +35,18 @@ public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 	public void include(
 			HttpServletRequest request, HttpServletResponse response,
 			String dynamicIncludeKey) throws IOException {
-		HashMap<String,HashSet<String>> result = TranslationHelperThreadLocal.retrieve();
+		HashMap<String,HashSet<String[]>> result = TranslationHelperThreadLocal.retrieve();
+		if(result.size()==0) {
+			return;
+		}
 		PrintWriter printWriter = response.getWriter();
 		printWriter.println("<script>"
 				+ "var liferayLanguageLookups = new Map([");
 		for (String key : result.keySet()) {
 			printWriter.print(" ['" + HtmlUtil.escapeJS(key) + "', [");
-			for (Iterator<String> iterator = result.get(key).iterator(); iterator.hasNext();) {
-				String value = iterator.next();
-				printWriter.print("'" + HtmlUtil.escapeJS(value) + "'");
+			for (Iterator<String[]> iterator = result.get(key).iterator(); iterator.hasNext();) {
+				String[] value = iterator.next();
+				printWriter.print("'" + HtmlUtil.escapeJS(value[0]) + "'");
 				if(iterator.hasNext()) {
 					printWriter.print(", ");
 				} else {

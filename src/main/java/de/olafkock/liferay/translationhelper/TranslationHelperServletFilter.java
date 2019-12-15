@@ -19,29 +19,43 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
+
+/**
+ * This ServletFilter wraps Liferay's translation lookup with its own implementation by
+ * injecting a different object to intercept all lookups. Note: Deactivation only works gracefully
+ * if no other plugin uses the same trick. We're manually re-wiring an implementation that has
+ * been initialized by Liferay core's spring wiring.
+ * 
+ * @author Olaf
+ */
+
+
 @Component(
 	      immediate = true,
 	      property = {
 	    		  "servlet-context-name=",
-	    		  "servlet-filter-name=LifeDev Document Filter",
+	    		  "servlet-filter-name=Translation Filter",
 	    		  "url-pattern=/web/*",
 	    		  "url-pattern=/group/*",
 	      },
 		service=Filter.class
 )
 
-public class TranslationHelperFilter implements Filter {
-	private static final Log log = LogFactoryUtil.getLog(TranslationHelperFilter.class);
+public class TranslationHelperServletFilter implements Filter {
+	private static final Log log = LogFactoryUtil.getLog(TranslationHelperServletFilter.class);
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		log.info(TranslationHelperFilter.class.getName() + " " + "initializing");
+		log.info(TranslationHelperServletFilter.class.getName() + " " + "initializing");
 	}
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		if(!initialized) {
+			// initializing late, to cater for unknown start order of modules. 
+			// When we're asked to filter a request for the first time, 
+			// the portal is surely all initialized and ready to be manipulated.
 			new LanguageUtil().setLanguage(new LanguageWrapper(LanguageUtil.getLanguage()));
 			this.initialized = true;
 		}
@@ -65,23 +79,24 @@ public class TranslationHelperFilter implements Filter {
 	}
 
 	private void report() {
-		HashMap<String, HashSet<String>> result = TranslationHelperThreadLocal.retrieve();
+		HashMap<String, HashSet<String[]>> result = TranslationHelperThreadLocal.retrieve();
 //		for (LookupResult lookupResult : result) {
 //			log.info(lookupResult);
 //		}
-		log.info("*************************" + result.size() + " keys looked up");
+		log.info(result.size() + " keys looked up in this request");
 	}
 
 	@Override
 	public void destroy() {
-		LanguageUtil languageUtil = new LanguageUtil();
-		Language language = LanguageUtil.getLanguage();
-		while(language instanceof LanguageWrapper) {
-			languageUtil.setLanguage(((LanguageWrapper)language).unwrap());
-			language = LanguageUtil.getLanguage();
+		if(initialized) {
+			LanguageUtil languageUtil = new LanguageUtil();
+			Language language = LanguageUtil.getLanguage();
+			if(language instanceof LanguageWrapper) {
+				languageUtil.setLanguage(((LanguageWrapper)language).unwrap());
+			}
+			initialized = false;
 		}
-		initialized = false;
-		log.info(TranslationHelperFilter.class.getName() + " " + "shut down");
+		log.info(TranslationHelperServletFilter.class.getName() + " " + "shut down");
 	}
 
 	private boolean initialized = false;

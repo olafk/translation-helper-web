@@ -2,7 +2,11 @@ package de.olafkock.liferay.translationhelper;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import javax.portlet.PortletConfig;
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,163 +35,239 @@ public class LanguageWrapper implements Language {
 		return delegate;
 	}
 
+	private String[] retrieveContext(Locale locale, String key) {
+		String context = TranslationHelperThreadLocal.retrieveContext();
+		return new String[] {"Locale:" + locale.getLanguage(), context};
+	}
+	
+	private String[] retrieveContext(ResourceBundle rb, String key) {
+		String context = TranslationHelperThreadLocal.retrieveContext();
+		return new String[] {"ResourceBundle", context};
+	}
+	
+	private String[] retrieveContext(HttpServletRequest httpServletRequest, String key) {
+		PortletConfig portletConfig =
+				(PortletConfig)httpServletRequest.getAttribute(
+					JavaConstants.JAVAX_PORTLET_CONFIG);
+
+		Locale locale = _getLocale(httpServletRequest);
+
+		if (portletConfig == null) {
+			return new String[] {"null", "portal"};
+		}
+
+		ResourceBundle resourceBundle = portletConfig.getResourceBundle(locale);
+
+		if (resourceBundle.containsKey(key)) {
+			return new String[] { portletConfig.getPortletName(), "portlet" };
+		} else {
+			return new String[] { portletConfig.getPortletName(), "portal" };
+		}
+	}
+
+	private Locale _getLocale(HttpServletRequest httpServletRequest) {
+		Locale locale = null;
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay != null) {
+			locale = themeDisplay.getLocale();
+		}
+		else {
+			locale = httpServletRequest.getLocale();
+
+			if (!isAvailableLocale(locale)) {
+				locale = LocaleUtil.getDefault();
+			}
+		}
+
+		return locale;
+	}
+
 	private Language delegate;
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper argument) {
 		String result = delegate.format(httpServletRequest, pattern, argument);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper argument, boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper[] arguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern,
 			com.liferay.portal.kernel.language.LanguageWrapper[] arguments, boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object argument) {
 		String result = delegate.format(httpServletRequest, pattern, argument);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object argument,
 			boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object[] arguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(HttpServletRequest httpServletRequest, String pattern, Object[] arguments,
 			boolean translateArguments) {
 		String result = delegate.format(httpServletRequest, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(httpServletRequest, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, List<Object> arguments) {
 		String result = delegate.format(locale, pattern, arguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(locale, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object argument) {
 		String result = delegate.format(locale, pattern, argument);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(locale, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object argument, boolean translateArguments) {
 		String result = delegate.format(locale, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(locale, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object[] arguments) {
 		String result = delegate.format(locale, pattern, arguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(locale, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(Locale locale, String pattern, Object[] arguments, boolean translateArguments) {
 		String result = delegate.format(locale, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(locale, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object argument) {
 		String result = delegate.format(resourceBundle, pattern, argument);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(resourceBundle, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object argument, boolean translateArguments) {
 		String result = delegate.format(resourceBundle, pattern, argument, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(resourceBundle, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object[] arguments) {
 		String result = delegate.format(resourceBundle, pattern, arguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(resourceBundle, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String format(ResourceBundle resourceBundle, String pattern, Object[] arguments,
 			boolean translateArguments) {
 		String result = delegate.format(resourceBundle, pattern, arguments, translateArguments);
-		TranslationHelperThreadLocal.add(pattern, result);
+		String[] context = retrieveContext(resourceBundle, pattern);
+		TranslationHelperThreadLocal.add(pattern, result, context);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, ResourceBundle resourceBundle, String key) {
 		String result = delegate.get(httpServletRequest, resourceBundle, key);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(httpServletRequest, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, ResourceBundle resourceBundle, String key,
 			String defaultValue) {
 		String result = delegate.get(httpServletRequest, resourceBundle, key, defaultValue);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(httpServletRequest, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, String key) {
 		String result = delegate.get(httpServletRequest, key);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(httpServletRequest, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(HttpServletRequest httpServletRequest, String key, String defaultValue) {
 		String result = delegate.get(httpServletRequest, key, defaultValue);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(httpServletRequest, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(Locale locale, String key) {
 		String result = delegate.get(locale, key);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(locale, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(Locale locale, String key, String defaultValue) {
 		String result = delegate.get(locale, key, defaultValue);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(locale, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(ResourceBundle resourceBundle, String key) {
 		String result = delegate.get(resourceBundle, key);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(resourceBundle, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
 	public String get(ResourceBundle resourceBundle, String key, String defaultValue) {
 		String result = delegate.get(resourceBundle, key, defaultValue);
-		TranslationHelperThreadLocal.add(key, result);
+		String[] context = retrieveContext(resourceBundle, key);
+		TranslationHelperThreadLocal.add(key, result, context);
 		return result;
 	}
 
