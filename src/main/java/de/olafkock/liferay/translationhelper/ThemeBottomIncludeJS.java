@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.service.component.annotations.Component;
 
 @Component(immediate = true, service = DynamicInclude.class)
-public class ThemeBottomInclude extends BaseDynamicInclude {
+
+public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 
 	@Override
 	public void include(
