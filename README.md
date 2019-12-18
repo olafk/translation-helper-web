@@ -8,7 +8,7 @@ This plugin for Liferay 7.2 follows an ancient idea from the 6.1 times [document
 
 Clone this repository into a Liferay Workspace (tested with DXP 7.2 SP1) and build it.
 
-When deployed to your running server, the default configuration makes the translations available to signed-in Administrators. You can change the configuration in Control Panel / Configuration / System Settings / Third Party / Translation Helper.
+When deployed to your running server, the default configuration makes the translations available to signed-in Administrators. You can change the configuration in Control Panel / Configuration / System Settings / Localization / Translation Helper.
 
 
 ## how does it look like?

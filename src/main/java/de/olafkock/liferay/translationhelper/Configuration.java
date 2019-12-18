@@ -1,7 +1,10 @@
 package de.olafkock.liferay.translationhelper;
 
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+
 import aQute.bnd.annotation.metatype.Meta;
 
+@ExtendedObjectClassDefinition(category = "localization")
 @Meta.OCD(
 	    id = "de.olafkock.liferay.translationhelper.Configuration"
 	    , localization = "content/Language"
