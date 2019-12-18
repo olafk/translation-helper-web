@@ -51,7 +51,7 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\" class=\"translationhelper-suspicious\">\n    <b><i>empty key</i></b>\n  </td>\n  <td>\n    <ul>\n");
 				target = suspicious;
 			} else if(key.indexOf(" ") > -1) {
-				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\" class=\"translationhelper-suspicious\">\n    " + HtmlUtil.escape(key) + " <b><i>contains space(s)</i></b>\n  </td>\n  <td>\n    <ul>\n");
+				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\" class=\"translationhelper-suspicious\">\n    " + HtmlUtil.escape(key) + " <br/><b><i>contains space(s) - translated twice?</i></b>\n  </td>\n  <td>\n    <ul>\n");
 				target = suspicious;
 			} else {
 				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\">\n    " + HtmlUtil.escape(key) + "\n  </td>\n  <td>\n    <ul>\n");
@@ -74,7 +74,7 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 				} else if(value[0].equals(key)){
 					thisValue.append("      <li class=\"translationhelper-suspicious\" title=\"" + value[1] + ", " + value[2] + "\">");
 					thisValue.append(HtmlUtil.escape(value[0]));
-					thisValue.append(" <b><i>untranslated</i></b>");
+					thisValue.append(" <b><i>untranslated or translated twice</i></b>");
 //					thisValue.append(" (" + value[1] + ", " + value[2] + ")" );
 					thisValue.append("</li>\n");
 					target = suspicious;
