@@ -1,4 +1,4 @@
-Bundle-Activator: de.olafkock.liferay.translationhelper.TranslationHelperServiceTrackerActivator
+Bundle-Activator: de.olafkock.liferay.translationhelper.osgi.TranslationHelperServiceTrackerActivator
 Bundle-Name: translation-helper-web
 Bundle-SymbolicName: de.olafkock.liferay.translationhelper
 Bundle-Version: 1.0.0

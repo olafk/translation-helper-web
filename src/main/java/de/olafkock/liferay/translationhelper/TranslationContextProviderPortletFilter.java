@@ -24,18 +24,19 @@ import javax.portlet.filter.RenderFilter;
 
 
 public class TranslationContextProviderPortletFilter implements RenderFilter {
+	@SuppressWarnings("unused")
 	private static final Log log = LogFactoryUtil.getLog(TranslationContextProviderPortletFilter.class);
 	private String context;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws PortletException {
 		context = HtmlUtil.escape(filterConfig.getPortletContext().getPortletContextName());
-		log.info("FILTER INIT (" + context + ")");
+//		log.info("FILTER INIT (" + context + ")");
 	}
 
 	@Override
 	public void destroy() {
-		log.info("FILTER DESTROY (" + context + ")");
+//		log.info("FILTER DESTROY (" + context + ")");
 	}
 
 	@Override

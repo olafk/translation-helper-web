@@ -1,4 +1,4 @@
-package de.olafkock.liferay.translationhelper;
+package de.olafkock.liferay.translationhelper.osgi;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -15,6 +15,8 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+
+import de.olafkock.liferay.translationhelper.TranslationContextProviderPortletFilter;
 
 /**
  * Registers or Unregisters a PortletFilter for each portlet service that's

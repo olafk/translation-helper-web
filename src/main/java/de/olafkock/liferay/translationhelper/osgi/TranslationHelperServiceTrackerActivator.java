@@ -1,4 +1,4 @@
-package de.olafkock.liferay.translationhelper;
+package de.olafkock.liferay.translationhelper.osgi;
 
 import javax.portlet.Portlet;
 
@@ -8,7 +8,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Initializes the {@link PortletServiceListener}
+ * Initializes the {@link PortletServiceListener} for this plugin
  * @author Olaf Kock
  */
 public class TranslationHelperServiceTrackerActivator implements BundleActivator {
