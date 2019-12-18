@@ -44,7 +44,18 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 		for (String key : result.keySet()) {
 			StringBuffer thisKey = new StringBuffer();
 			StringBuffer target = unsuspicious;
-			thisKey.append("<tr>\n  <td style=\"vertical-align:top;\">\n    " + HtmlUtil.escape(key) + "\n  </td>\n  <td>\n    <ul>\n");
+			if(key == null) {
+				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\" class=\"translationhelper-suspicious\">\n    <b><i>null key</i></b>\n  </td>\n  <td>\n    <ul>\n");
+				target = suspicious;
+			} else if(key.equals("")) {
+				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\" class=\"translationhelper-suspicious\">\n    <b><i>empty key</i></b>\n  </td>\n  <td>\n    <ul>\n");
+				target = suspicious;
+			} else if(key.indexOf(" ") > -1) {
+				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\" class=\"translationhelper-suspicious\">\n    " + HtmlUtil.escape(key) + " <b><i>contains space(s)</i></b>\n  </td>\n  <td>\n    <ul>\n");
+				target = suspicious;
+			} else {
+				thisKey.append("<tr>\n  <td style=\"vertical-align:top;\">\n    " + HtmlUtil.escape(key) + "\n  </td>\n  <td>\n    <ul>\n");
+			}
 			Iterator<String[]> iterator = result.get(key).iterator();
 			HashSet<String> allValuesForThisKey = new HashSet<String>(); // For deduplication of individual lines without array-compare
 			while (iterator.hasNext()) {
@@ -63,6 +74,7 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 				} else if(value[0].equals(key)){
 					thisValue.append("      <li class=\"translationhelper-suspicious\" title=\"" + value[1] + ", " + value[2] + "\">");
 					thisValue.append(HtmlUtil.escape(value[0]));
+					thisValue.append(" <b><i>untranslated</i></b>");
 //					thisValue.append(" (" + value[1] + ", " + value[2] + ")" );
 					thisValue.append("</li>\n");
 					target = suspicious;
