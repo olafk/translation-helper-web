@@ -55,9 +55,9 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class TranslationHelperServletFilter implements Filter {
 	private static final Log log = LogFactoryUtil.getLog(TranslationHelperServletFilter.class);
-	private Configuration configuration;
+	private volatile Configuration configuration;
 	private RoleLocalService roleLocalService;
-	private long roleId = 0;
+	private volatile long roleId = 0;
 	private boolean initialized = false;
 	
 	@Override
