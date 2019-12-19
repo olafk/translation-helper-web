@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,21 +45,38 @@ public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 		PrintWriter printWriter = response.getWriter();
 		printWriter.println("<script>\n"
 				+ "function getLiferayLanguageLookups() \n{\n"
-				+ "  var liferayLanguageLookups = new Map([");
-		for (String key : result.keySet()) {
-			printWriter.print("    ['" + HtmlUtil.escapeJS(key) + "', [");
+				+ "  var liferayLanguageLookups = ([");
+		Set<String> keySet = result.keySet();
+		for (Iterator<String> keysIterator = keySet.iterator(); keysIterator.hasNext();) {
+			String key = keysIterator.next();
+			Set<String> valueContext = new HashSet<String>();
+			
+			// compute values and contexts. Stored in a set for deduplication
 			for (Iterator<String[]> iterator = result.get(key).iterator(); iterator.hasNext();) {
-				String[] value = iterator.next();
-				printWriter.print("'" + HtmlUtil.escapeJS(value[0]) + "'");
+				String[] currentValue = iterator.next();
+				String tmp = "value:'" +  HtmlUtil.escapeJS(currentValue[0]) + "', "
+						+ "context:'" + HtmlUtil.escape(currentValue[1] + "/" + currentValue[2]) + "'";
+				valueContext.add(tmp);
+			}
+			
+			// to make processing easier on the app side, introducing fake indexed keys in case there are
+			// multiple lookups for the same keys
+			boolean decorateWithIndex = valueContext.size() > 1;
+			int counter = 0;
+			for (Iterator<String> iterator = valueContext.iterator(); iterator.hasNext();) {
+				String string = iterator.next();
+				printWriter.print("    { key: '" + HtmlUtil.escape(key + (decorateWithIndex?"--"+counter++:"")) + "', ");
+				printWriter.print(string);
+				printWriter.print("}");
 				if(iterator.hasNext()) {
-					printWriter.print(", ");
-				} else {
-					printWriter.print("]");
+					printWriter.println(",");
 				}
 			}
-			printWriter.println( "],");
+			if(keysIterator.hasNext()) {
+				printWriter.println(",");
+			}
 		}
-		printWriter.println("  ]);");
+		printWriter.println("\n  ]);");
 		printWriter.println("  return liferayLanguageLookups;\n}\n</script>");	
 	}
 
