@@ -107,9 +107,11 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 		printWriter.println("<style>.translationhelper-suspicious { " + suspiciousEntryStyle + " }</style>");
 		printWriter.println("<h1>Translations on this page</h1>");
 		printWriter.println("<table border=\"1\" style=\"vertical-align:top;\">");
+		printWriter.println("<thead><tr><td>Localization key</td><td>Localized value (hover mouse for context)</td></tr></thead>\n"
+				+ "<tbody>");
 		printWriter.println(suspicious);
 		printWriter.println(unsuspicious);
-		printWriter.println("</table>");
+		printWriter.println("</tbody>\n</table>");
 		printWriter.println("<p>Some values might be looked up multiple times - hover mouse over "
 				+ "the translated value to see information about the context in which they have "
 				+ "been looked up.</p>");
