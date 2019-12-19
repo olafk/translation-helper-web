@@ -54,8 +54,8 @@ public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 			// compute values and contexts. Stored in a set for deduplication
 			for (Iterator<String[]> iterator = result.get(key).iterator(); iterator.hasNext();) {
 				String[] currentValue = iterator.next();
-				String tmp = "value:'" +  HtmlUtil.escapeJS(currentValue[0]) + "', "
-						+ "context:'" + HtmlUtil.escape(currentValue[1] + "/" + currentValue[2]) + "'";
+				String tmp = "value: '" +  HtmlUtil.escapeJS(currentValue[0]) + "', "
+						+ "context: '" + HtmlUtil.escape(currentValue[1] + "/" + currentValue[2]) + "'";
 				valueContext.add(tmp);
 			}
 			
