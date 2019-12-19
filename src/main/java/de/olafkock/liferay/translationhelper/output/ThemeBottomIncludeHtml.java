@@ -1,5 +1,7 @@
 package de.olafkock.liferay.translationhelper.output;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -9,12 +11,17 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
+import de.olafkock.liferay.translationhelper.Configuration;
 import de.olafkock.liferay.translationhelper.TranslationHelperThreadLocal;
 
 /**
@@ -26,10 +33,13 @@ import de.olafkock.liferay.translationhelper.TranslationHelperThreadLocal;
 
 @Component(
 		immediate = true, 
+        configurationPid = "de.olafkock.liferay.translationhelper.Configuration",
 		service = DynamicInclude.class
 	)
 
 public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
+
+	private static String suspiciousEntryStyle = "background-color:red;";
 
 	@Override
 	public void include(
@@ -94,7 +104,7 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 		}
 		PrintWriter printWriter = response.getWriter();
 		printWriter.println("<div id=\"translation-helper-table-result\">");
-		printWriter.println("<style>.translationhelper-suspicious { background-color:red; }</style>");
+		printWriter.println("<style>.translationhelper-suspicious { " + suspiciousEntryStyle + " }</style>");
 		printWriter.println("<h1>Translations on this page</h1>");
 		printWriter.println("<table border=\"1\" style=\"vertical-align:top;\">");
 		printWriter.println(suspicious);
@@ -120,5 +130,15 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
 		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
-
+	
+	@Reference
+	public void setConfigurationProvider(ConfigurationProvider configurationProvider) {
+	}
+	
+	@Activate
+	@Modified
+	private void activate(Map<String, Object> properties) {
+		Configuration configuration = ConfigurableUtil.createConfigurable(Configuration.class, properties);
+		suspiciousEntryStyle = HtmlUtil.escape(configuration.suspiciousEntryStyling());
+	}
 }

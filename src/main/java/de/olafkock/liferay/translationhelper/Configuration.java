@@ -27,4 +27,13 @@ public interface Configuration {
 			required = false
 			)
 	public String applicationUrl();
+	
+	@Meta.AD(
+			deflt = "background-color:red;",
+			description = "suspicious-entry-styling-description",
+			name = "suspicious-entry-styling",
+			required = false
+			)
+	public String suspiciousEntryStyling();
+	
 }
