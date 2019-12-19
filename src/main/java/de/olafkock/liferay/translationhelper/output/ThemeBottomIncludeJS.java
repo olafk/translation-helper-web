@@ -42,10 +42,11 @@ public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 			return;
 		}
 		PrintWriter printWriter = response.getWriter();
-		printWriter.println("<script>"
-				+ "var liferayLanguageLookups = new Map([");
+		printWriter.println("<script>\n"
+				+ "function getLiferayLanguageLookups() \n{\n"
+				+ "  var liferayLanguageLookups = new Map([");
 		for (String key : result.keySet()) {
-			printWriter.print(" ['" + HtmlUtil.escapeJS(key) + "', [");
+			printWriter.print("    ['" + HtmlUtil.escapeJS(key) + "', [");
 			for (Iterator<String[]> iterator = result.get(key).iterator(); iterator.hasNext();) {
 				String[] value = iterator.next();
 				printWriter.print("'" + HtmlUtil.escapeJS(value[0]) + "'");
@@ -57,8 +58,8 @@ public class ThemeBottomIncludeJS extends BaseDynamicInclude {
 			}
 			printWriter.println( "],");
 		}
-		printWriter.println("]);");
-		printWriter.println("</script>");	
+		printWriter.println("  ]);");
+		printWriter.println("  return liferayLanguageLookups;\n}\n</script>");	
 	}
 
 	@Override
