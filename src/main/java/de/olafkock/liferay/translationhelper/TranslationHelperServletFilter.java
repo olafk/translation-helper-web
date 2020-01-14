@@ -57,8 +57,8 @@ public class TranslationHelperServletFilter implements Filter {
 	private static final Log log = LogFactoryUtil.getLog(TranslationHelperServletFilter.class);
 	private volatile Configuration configuration;
 	private RoleLocalService roleLocalService;
-	private volatile long roleId = 0;
-	private boolean initialized = false;
+	private long roleId = 0;
+	private volatile boolean initialized = false;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -137,11 +137,11 @@ public class TranslationHelperServletFilter implements Filter {
 			// component as well. As this plugin shouldn't be deployed in 
 			// production systems, that's well accepted.
 			
-			LanguageUtil languageUtil = new LanguageUtil();
 			Language language = LanguageUtil.getLanguage();
-			if(language instanceof LanguageWrapper) {
-				languageUtil.setLanguage(((LanguageWrapper)language).unwrap());
+			while(language instanceof LanguageWrapper) {
+				language = ((LanguageWrapper)language).unwrap();
 			}
+			new LanguageUtil().setLanguage(language);
 			initialized = false;
 		}
 		log.info(TranslationHelperServletFilter.class.getName() + " " + "shut down");
