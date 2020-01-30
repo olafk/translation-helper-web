@@ -37,7 +37,7 @@ public class LanguageWrapper implements Language {
 
 	private String[] retrieveContext(Locale locale, String key) {
 		String context = TranslationHelperThreadLocal.retrieveContext();
-		return new String[] {"Locale:" + locale.getLanguage(), context};
+		return new String[] {"Locale:" + (locale==null?"null locale":locale.getLanguage()), context};
 	}
 	
 	private String[] retrieveContext(ResourceBundle rb, String key) {
