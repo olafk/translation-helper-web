@@ -88,6 +88,16 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 //					thisValue.append(" (" + value[1] + ", " + value[2] + ")" );
 					thisValue.append("</li>\n");
 					target = suspicious;
+                } else if(value[0].indexOf("&amp;") > -1) {
+                    thisValue.append("      <li class=\"translationhelper-suspicious\" title=\"" + value[1] + ", " + value[2] + "\">");
+                    thisValue.append(HtmlUtil.escape(value[0]) + " <b><i>found xml entity &amp;amp; - duplicate escape?</i></b>");
+                    thisValue.append("</li>\n");
+                    target = suspicious;
+                } else if(value[0].indexOf("&lt;") > -1) {
+                    thisValue.append("      <li class=\"translationhelper-suspicious\" title=\"" + value[1] + ", " + value[2] + "\">");
+                    thisValue.append(HtmlUtil.escape(value[0]) + " <b><i>found xml entity &amp;lt; - escaped?</i></b>");
+                    thisValue.append("</li>\n");
+                    target = suspicious;
 				} else {
 					thisValue.append("      <li class=\"translationhelper-unsuspicious\" title=\"" + value[1] + ", " + value[2] + "\">");
 					thisValue.append(HtmlUtil.escape(value[0]));
