@@ -2,10 +2,10 @@ package de.olafkock.liferay.translationhelper;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
@@ -362,11 +362,6 @@ public class LanguageWrapper implements Language {
 	}
 
 	@Override
-	public ResourceBundleLoader getPortalResourceBundleLoader() {
-		return delegate.getPortalResourceBundleLoader();
-	}
-
-	@Override
 	public Set<Locale> getSupportedLocales() {
 		return delegate.getSupportedLocales();
 	}
@@ -470,5 +465,10 @@ public class LanguageWrapper implements Language {
 	public void updateCookie(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			Locale locale) {
 		delegate.updateCookie(httpServletRequest, httpServletResponse, locale);
+	}
+
+	@Override
+	public ResourceBundleLoader getResourceBundleLoader() {
+		return delegate.getResourceBundleLoader();
 	}
 }
