@@ -1,7 +1,7 @@
 package de.olafkock.liferay.translationhelper.output;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,7 +110,23 @@ public class ThemeBottomIncludeHtml extends BaseDynamicInclude {
 			for (String string : allValuesForThisKey) {
 				thisKey.append(string);
 			}
-			thisKey.append( "    </ul>\n  </td>\n</tr>\n");
+			thisKey.append( "    </ul>\n");
+			if(target == suspicious) {
+				HashMap<String, List<String>> allStacktraces = TranslationHelperThreadLocal.retrieveStacktraces();
+				List<String> allStacktracesForThisKey = allStacktraces.get(key);
+				int stackTraceCount = allStacktracesForThisKey.size();
+				if(stackTraceCount>0) {
+					thisKey.append("<p>" + stackTraceCount + " stacktraces:</p>\n");
+					if(stackTraceCount < 5) {
+						for (String st : allStacktracesForThisKey) {
+							thisKey.append("<pre>");
+							thisKey.append(st);
+							thisKey.append("</pre>");
+						}
+					}
+				}
+			}
+			thisKey.append("</td>\n</tr>\n");
 			target.append(thisKey.toString());
 		}
 		PrintWriter printWriter = response.getWriter();

@@ -2,6 +2,8 @@ package de.olafkock.liferay.translationhelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Keep a context for translation during the current thread.
@@ -15,6 +17,9 @@ public class TranslationHelperThreadLocal {
 
 	//// STATIC CONVENIENCE METHODS
 	
+	private static int stacktraceSkip = 4;
+	private static int stacktraceMax = 17;
+
 	/**
 	 * LanguageWrapper is applied unconditionally, and will register information with
 	 * this ThreadLocal. However, the filter isn't applied to each and every request,
@@ -51,6 +56,10 @@ public class TranslationHelperThreadLocal {
 		return tl.get().getResults();
 	}
 
+	public static HashMap<String,List<String>> retrieveStacktraces() {
+		return tl.get().getStacktraces();
+	}
+	
 	/**
 	 * remove the underlying ThreadLocal, to make sure we're never leaking those values
 	 */
@@ -77,6 +86,11 @@ public class TranslationHelperThreadLocal {
 		}
 	}
 
+	public static void setStacktraceInterval(int skip, int max) {
+		TranslationHelperThreadLocal.stacktraceSkip = skip;
+		TranslationHelperThreadLocal.stacktraceMax = max;
+	}
+	
 	//// STATIC IMPLEMENTATION
 	
 	private static String[] combine(String value, String[] context) {
@@ -86,17 +100,18 @@ public class TranslationHelperThreadLocal {
 			result[i+1] = context[i];
 		}
 		return result;
-	}
-	
+	}	
 
 	//// THREAD LOCAL IMPLEMENTATION - to be used from static convenience methods only.
 	
 	private HashMap<String,HashSet<String[]>> results;
+	private HashMap<String,List<String>> stacktraces;
 	private boolean active = false;
 	private String context = "no-context-available";
 	
 	private TranslationHelperThreadLocal() {
 		this.results = new HashMap<String, HashSet<String[]>>();
+		this.stacktraces = new HashMap<String, List<String>>();
 	}
 	
 	private void addResult(String key, String[] value) {
@@ -107,14 +122,57 @@ public class TranslationHelperThreadLocal {
 		if(values == null) {
 			values = new HashSet<String[]>();
 			results.put(key, values);
+			LinkedList<String> stacks = new LinkedList<String>();
+			stacktraces.put(key, stacks);
 		}
 		values.add(value);
+		stacktraces.get(key).add(currentStacktrace());
 	}
 	
+	private String currentStacktrace() {
+		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+		StringBuffer result = new StringBuffer();
+		for (int i = stacktraceSkip; i < Math.min(stacktraceMax, stackTrace.length); i++) {
+			StackTraceElement line = stackTrace[i];
+			result.append(simplifyStackTraceLine(line.toString()))
+			.append("\n");
+		}
+		return result.toString();
+	}
+
+	private String simplifyStackTraceLine(String line) {
+		String result = line;
+		int max = line.indexOf("._jspService("); 
+		if(max>0) {
+			String originalLine = line;
+			result = "";
+			line = line.substring(0, max);
+			while(line.indexOf(".")>0) {
+				int dot = line.indexOf(".");
+				result += line.substring(0, dot).replace("_005f", "_");
+				if(line.indexOf(".", dot+1)>0) {
+					result += "/";
+				} else {
+					result += "/" + line.substring(dot+1).replace("_005f", "_").replace("_jsp", ".jsp");
+				}
+				line = line.substring(dot+1, line.length());
+			}
+			result += " (" + originalLine + ")";
+			if(result.startsWith("org/apache/jsp/")) {
+				result = result.substring("org/apache/jsp/".length());
+			}
+		}
+		return result;
+	}
+
 	private HashMap<String,HashSet<String[]>> getResults() {
 		return this.results;
 	}
 
+	private HashMap<String,List<String>> getStacktraces() {
+		return stacktraces;
+	}
+	
 	private boolean isActive() {
 		return active;
 	}

@@ -36,4 +36,25 @@ public interface Configuration {
 			)
 	public String suspiciousEntryStyling();
 	
+	@Meta.AD(
+			deflt = "5",
+			description = "stacktrace-skip-description",
+			name = "stacktrace-skip",
+			required = false
+			)
+	public int stacktraceSkip();
+	
+	@Meta.AD(
+			deflt = "17",
+			description = "stacktrace-max-description",
+			name = "stacktrace-max",
+			required = false
+			)
+	public int stacktraceMax();
+	
+		
+	
+	
+	
+	
 }
